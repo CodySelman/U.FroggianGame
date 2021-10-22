@@ -354,9 +354,10 @@ MonoBehaviour:
   rb: {fileID: 0}
   debug: 1
   isGrounded: 1
+  isMovingX: 0
   moveSpeed: 600
-  jumpForce: 5
-  minJumpMagnitude: 0.1
+  jumpForce: 2
+  minJumpMagnitude: 2
   maxJumpMagnitude: 5
   jumpSquatTime: 0.1
 --- !u!114 &1114039934

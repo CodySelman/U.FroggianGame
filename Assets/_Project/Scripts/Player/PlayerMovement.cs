@@ -30,7 +30,9 @@ public class PlayerMovement : MonoBehaviour
     public PlayerStunState stunState;
 
     // movement variables
+    public Vector2 directionalInput;
     public bool isGrounded = true;
+    public bool isMovingX = false;
     [SerializeField]
 	private float moveSpeed = 6;
     [SerializeField]
@@ -39,9 +41,9 @@ public class PlayerMovement : MonoBehaviour
     private float minJumpMagnitude = 0.1f;
 	[SerializeField]
     private float maxJumpMagnitude = 5f;
+    [SerializeField]
+    private float minJumpAngle = 0f;
     public float jumpSquatTime = 0.025f;
-
-    Vector2 directionalInput;
 
     void Start() {
         // components 
@@ -63,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update() {
+        isMovingX = CheckForMovementX();
+
         sm.CurrentState.HandleInput();
         sm.CurrentState.LogicUpdate();
 
@@ -87,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void OnCollisionStay2D(Collision2D collision) {
-        HandleCollision(collision);
+        // HandleCollision(collision);
     }
 
     void HandleCollision(Collision2D collision) {
@@ -99,34 +103,70 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    bool CheckForMovementX() {
+        return Mathf.Abs(rb.velocity.x) >= 0.01f;
+    }
+
     public void SetDirectionalInput (Vector2 input) {
 		directionalInput = input;
 	}
 
     public void Walk() {
-        rb.velocity = new Vector2(
-            Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
-            0
-        );
-    }
+        float tempMoveSpeed = Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime;
+        float currentMoveDir = Mathf.Sign(rb.velocity.x);
+        float inputMoveDir = Mathf.Sign(tempMoveSpeed);
+        float processedMoveSpeed = 0;
+        float resultantMoveDir = currentMoveDir + inputMoveDir;
 
-    public void SetVelocityToZero() {
-        rb.velocity = Vector2.zero;
+        if (resultantMoveDir > 0) { // moving right
+            processedMoveSpeed = Mathf.Max(
+                Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
+                rb.velocity.x
+            );
+        } else if (resultantMoveDir < 0) { // moving left
+            processedMoveSpeed = Mathf.Min(
+                Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
+                rb.velocity.x
+            );
+        } else { // trying to move the opposite direction of current velocity
+            processedMoveSpeed = 
+                Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime +
+                rb.velocity.x;
+        }
+
+        rb.velocity = new Vector2(
+            processedMoveSpeed,
+            rb.velocity.y
+        );
     }
 
 
     public void Jump(Vector2 jumpVector) {
-        Debug.Log("Jump");
+        // Debug.Log("Jump");
         Debug.Log("Jump Vector: " + jumpVector.ToString());
-        Debug.Log("unprocesses mag: " + jumpVector.magnitude);
-        float magnitude = Mathf.Clamp(jumpVector.magnitude, minJumpMagnitude, maxJumpMagnitude);
-        Debug.Log("processed Mag: " + magnitude.ToString());
-        rb.AddForce(jumpVector.normalized * magnitude, ForceMode2D.Impulse);
+        // Debug.Log("unprocesses mag: " + jumpVector.magnitude);
+        float magnitude = Mathf.Clamp(
+            jumpVector.magnitude, 
+            minJumpMagnitude, 
+            maxJumpMagnitude
+        );
+        float jumpDir = Mathf.Sign(jumpVector.x);
+        float tempAngle = jumpDir > 0 ? 
+            Vector2.SignedAngle(Vector2.right, jumpVector) :
+            Vector2.SignedAngle(Vector2.left, jumpVector) * -1;
+        // Debug.Log("tempAngle: " + tempAngle);
+        float jumpAngle = Mathf.Max(tempAngle, minJumpAngle);
+        // Debug.Log("jumpAngle: " + jumpAngle);
+        Vector2 processedJumpVector = Utilities.DegreeToVector2(jumpAngle);
+        processedJumpVector.x *= jumpDir;
+        // Debug.Log("ProcessedJumpVector: " + processedJumpVector.ToString());
+        // Debug.Log("processed Mag: " + magnitude.ToString());
+        rb.AddForce(processedJumpVector * magnitude* jumpForce, ForceMode2D.Impulse);
         isGrounded = false;
     }
 
     public PlayerGroundedState GetProperGroundedState() {
-        if (Mathf.Abs(directionalInput.x) >= 0.01f) {
+        if (isMovingX) {
             return walkState;
         } else {
             return idleState;

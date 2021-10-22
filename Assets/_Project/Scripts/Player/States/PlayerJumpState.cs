@@ -11,6 +11,7 @@ public class PlayerJumpState : PlayerAirborneState
     public override void Enter()
     {
         base.Enter();
+        Debug.Log("jump state enter");
         // TODO play animation
     }
 
@@ -23,6 +24,7 @@ public class PlayerJumpState : PlayerAirborneState
     {
         base.LogicUpdate();
         if (pm.isGrounded) {
+            Debug.Log("grounded, leaving jump state");
             sm.ChangeState(pm.GetProperGroundedState());
         }
     }

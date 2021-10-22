@@ -18,7 +18,7 @@ public class PlayerWalkState : PlayerGroundedState
     {
         base.HandleInput();
 
-        if (Mathf.Abs(Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL)) < 0.01f)
+        if (!pm.isMovingX)
         {
             sm.ChangeState(pm.idleState);
         }

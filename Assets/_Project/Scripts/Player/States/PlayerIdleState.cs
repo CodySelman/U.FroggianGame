@@ -12,14 +12,13 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.Enter();
         // TODO play idle animation
-        // pm.SetVelocityToZero();
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
 
-        if (Mathf.Abs(Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL)) >= 0.01f)
+        if (Mathf.Abs(pm.directionalInput.x) >= 0.1f)
         {
             sm.ChangeState(pm.walkState);
         }

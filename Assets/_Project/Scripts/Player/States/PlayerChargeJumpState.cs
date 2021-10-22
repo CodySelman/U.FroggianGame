@@ -18,7 +18,6 @@ public class PlayerChargeJumpState : PlayerGroundedState
         // TODO play animation
         isJumping = false;
         initialMousePos = GetMousePosition();
-        // pm.SetVelocityToZero();
     }
 
     public override void HandleInput()
