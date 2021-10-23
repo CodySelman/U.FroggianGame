@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 public class SpritesheetSlicer : ScriptableWizard
 {
@@ -40,6 +41,8 @@ public class SpritesheetSlicer : ScriptableWizard
 	void ProcessTexture(Texture2D texture)
 	{
 		string path = AssetDatabase.GetAssetPath(texture);
+        string fileName = Path.GetFileNameWithoutExtension(path);
+        Debug.Log(fileName);
 		var importer = AssetImporter.GetAtPath(path) as TextureImporter;
 
 		//importer.isReadable = true;
@@ -61,13 +64,13 @@ public class SpritesheetSlicer : ScriptableWizard
  
         List<SpriteMetaData> metas = new List<SpriteMetaData>();
  
-        for (int r = 0; r < rowCount; ++r)
+        for (int r = rowCount; r > 0; --r)
         {
-            for (int c = 0; c < colCount; ++c)
+            for (int c = colCount; c > 0; --c)
             {
                 SpriteMetaData meta = new SpriteMetaData();
                 meta.rect = new Rect(c * spriteWidth, r * spriteHeight, spriteWidth, spriteHeight);
-                meta.name = c + "-" + r;
+                meta.name = fileName + "_" + c + "_" + r;
                 metas.Add(meta);
             }
         }

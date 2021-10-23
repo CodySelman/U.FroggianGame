@@ -20,6 +20,11 @@ public class PlayerGroundedState : PlayerBaseState
         if (Input.GetMouseButtonDown(0)) {
             sm.ChangeState(pm.chargeJumpState);
         }
+
+        // TODO fall state?
+        if (!pm.isGrounded) {
+            sm.ChangeState(pm.jumpState);
+        }
     }
 
     public override void LogicUpdate()

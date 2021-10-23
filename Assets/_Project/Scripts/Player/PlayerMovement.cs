@@ -12,7 +12,8 @@ public class PlayerMovement : MonoBehaviour
     public TMP_Text stateText;
     [SerializeField]
     Rigidbody2D rb;
-    CapsuleCollider2D capsCollider;
+    // CapsuleCollider2D capsCollider;
+    BoxCollider2D boxCollider;
 
     public bool debug = false;
 
@@ -53,7 +54,8 @@ public class PlayerMovement : MonoBehaviour
     void Start() {
         // components 
         rb = GetComponent<Rigidbody2D>();
-        capsCollider = GetComponent<CapsuleCollider2D>();
+        // capsCollider = GetComponent<CapsuleCollider2D>();
+        boxCollider = GetComponent<BoxCollider2D>();
 
         // State Machine
         sm = new StateMachine();
@@ -123,23 +125,24 @@ public class PlayerMovement : MonoBehaviour
     bool CheckForGrounded() {
         // Cast a number of rays from  vertical center of capsule, equal to capsule height/2 + offset
         // if any of the rays hit the ground, isGrounded = true
-        Bounds bounds = capsCollider.bounds;
+        Bounds bounds = boxCollider.bounds;
         float boundsWidth = bounds.size.x;
         int rayCount = 5;
-        float rayBuffer = 0.2f;
+        float rayBuffer = 0.05f;
 
         for (int i = 0; i < rayCount; i ++) {
-            float rayOriginX = (transform.position.x + capsCollider.bounds.extents.x) 
-                - ((capsCollider.bounds.size.x / (rayCount - 1)) * i);
+            float rayOriginX = (transform.position.x + bounds.extents.x) 
+                - ((bounds.size.x / (rayCount - 1)) * i);
+
             Vector2 rayOrigin = new Vector2(
                 rayOriginX,
-                transform.position.y
+                transform.position.y + boxCollider.offset.y - bounds.extents.y
             );
 
             if (debug) {
                 Debug.DrawRay(
                     rayOrigin, 
-                    Vector2.down * (capsCollider.bounds.extents.y + rayBuffer), 
+                    Vector2.down * (rayBuffer), 
                     Color.green
                 );
             }
@@ -147,7 +150,7 @@ public class PlayerMovement : MonoBehaviour
             RaycastHit2D[] hit = Physics2D.RaycastAll(
                 rayOrigin, 
                 Vector2.down, 
-                capsCollider.bounds.extents.y + rayBuffer
+                rayBuffer
             );
 
             foreach (RaycastHit2D h in hit) {
