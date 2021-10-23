@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerChargeJumpState : PlayerGroundedState
 {
     private Vector2 initialMousePos;
+    private bool jumpNextUpdate = false;
     private bool isJumping = false;
     private float jumpTimer = 0f;
 
@@ -16,6 +17,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
     {
         base.Enter();
         // TODO play animation
+        jumpNextUpdate = false;
         isJumping = false;
         initialMousePos = GetMousePosition();
     }
@@ -24,9 +26,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
     {
         base.HandleInput();
         if (!Input.GetMouseButton(0) && !isJumping) {
-            pm.Jump(GetJumpVector());
-            jumpTimer = pm.jumpSquatTime;
-            isJumping = true;
+            jumpNextUpdate = true;
         }
     }
 
@@ -49,6 +49,12 @@ public class PlayerChargeJumpState : PlayerGroundedState
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        if (jumpNextUpdate) {
+            pm.Jump(GetJumpVector());
+            jumpTimer = pm.jumpSquatTime;
+            isJumping = true;
+            jumpNextUpdate = false;
+        }
     }
 
     public override void LateUpdate()

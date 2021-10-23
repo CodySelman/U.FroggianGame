@@ -312,6 +312,7 @@ GameObject:
   - component: {fileID: 1114039935}
   - component: {fileID: 1114039934}
   - component: {fileID: 1114039931}
+  - component: {fileID: 1114039932}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -353,13 +354,39 @@ MonoBehaviour:
   stateText: {fileID: 1978214164}
   rb: {fileID: 0}
   debug: 1
+  directionalInput: {x: 0, y: 0}
   isGrounded: 1
   isMovingX: 0
-  moveSpeed: 600
-  jumpForce: 2
+  isPlayerTryingToMoveX: 0
+  moveSpeed: 200
+  jumpForce: 4
   minJumpMagnitude: 2
   maxJumpMagnitude: 5
+  minJumpAngle: 30
   jumpSquatTime: 0.1
+  landingLagTime: 0.25
+--- !u!114 &1114039932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1114039929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 718ec30d0a6ec574db16a5b4b4b480b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 64
+  horizontalRayCount: 0
+  verticalRayCount: 0
+  horizontalRaySpacing: 0
+  verticalRaySpacing: 0
+  collider: {fileID: 0}
+  maxSlopeAngle: 80
+  playerInput: {x: 0, y: 0}
 --- !u!114 &1114039934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -387,7 +414,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1

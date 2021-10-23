@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerJumpState : PlayerAirborneState
 {
+    private float minJumpTime = 0.1f;
+    private float jumpTime = 0;
+
     public PlayerJumpState(PlayerMovement pm, StateMachine sm) : base(pm, sm)
     {
     }
@@ -25,7 +28,7 @@ public class PlayerJumpState : PlayerAirborneState
         base.LogicUpdate();
         if (pm.isGrounded) {
             Debug.Log("grounded, leaving jump state");
-            sm.ChangeState(pm.GetProperGroundedState());
+            sm.ChangeState(pm.landingLagState);
         }
     }
 

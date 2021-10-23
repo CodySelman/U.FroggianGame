@@ -18,7 +18,7 @@ public class PlayerWalkState : PlayerGroundedState
     {
         base.HandleInput();
 
-        if (!pm.isMovingX)
+        if (!pm.isPlayerTryingToMoveX)
         {
             sm.ChangeState(pm.idleState);
         }
@@ -27,12 +27,12 @@ public class PlayerWalkState : PlayerGroundedState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
-        pm.Walk();
     }
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
+        pm.Walk();
     }
 
     public override void LateUpdate()

@@ -27,12 +27,15 @@ public class PlayerMovement : MonoBehaviour
     [System.NonSerialized]
     public PlayerJumpState jumpState;
     [System.NonSerialized]
+    public PlayerLandingLagState landingLagState;
+    [System.NonSerialized]
     public PlayerStunState stunState;
 
     // movement variables
     public Vector2 directionalInput;
     public bool isGrounded = true;
     public bool isMovingX = false;
+    public bool isPlayerTryingToMoveX = false;
     [SerializeField]
 	private float moveSpeed = 6;
     [SerializeField]
@@ -44,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float minJumpAngle = 0f;
     public float jumpSquatTime = 0.025f;
+    public float landingLagTime = 0.25f;
 
     void Start() {
         // components 
@@ -56,6 +60,7 @@ public class PlayerMovement : MonoBehaviour
         walkState = new PlayerWalkState(this, sm);
         chargeJumpState = new PlayerChargeJumpState(this, sm);
         jumpState = new PlayerJumpState(this, sm);
+        landingLagState = new PlayerLandingLagState(this, sm);
         stunState = new PlayerStunState(this, sm);
         sm.Initialize(idleState);
 
@@ -65,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update() {
-        isMovingX = CheckForMovementX();
+        isPlayerTryingToMoveX = CheckForPlayerInputX();
 
         sm.CurrentState.HandleInput();
         sm.CurrentState.LogicUpdate();
@@ -78,6 +83,9 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void FixedUpdate() {
+        isMovingX = CheckForMovementX();
+        isGrounded = CheckForGrounded();
+
         sm.CurrentState.PhysicsUpdate();
     }
 
@@ -95,16 +103,61 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void HandleCollision(Collision2D collision) {
-        if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND)
-        ) {
-            isGrounded = true;
-        } else {
-            isGrounded = false;
-        }
+        // if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND)
+        // ) {
+        //     isGrounded = true;
+        // } else {
+        //     isGrounded = false;
+        // }
     }
 
     bool CheckForMovementX() {
         return Mathf.Abs(rb.velocity.x) >= 0.01f;
+    }
+
+    bool CheckForPlayerInputX() {
+        return Mathf.Abs(directionalInput.x) >= 0.1f;
+    }
+
+    bool CheckForGrounded() {
+        // Cast a number of rays from  vertical center of capsule, equal to capsule height/2 + offset
+        // if any of the rays hit the ground, isGrounded = true
+        Bounds bounds = capsCollider.bounds;
+        float boundsWidth = bounds.size.x;
+        int rayCount = 5;
+
+        for (int i = 0; i < rayCount; i ++) {
+            float rayOriginX = (transform.position.x + capsCollider.bounds.extents.x) 
+                - ((capsCollider.bounds.size.x / (rayCount - 1)) * i);
+            Vector2 rayOrigin = new Vector2(
+                rayOriginX,
+                transform.position.y
+            );
+
+            if (debug) {
+                Debug.DrawRay(
+                    rayOrigin, 
+                    Vector2.down * (capsCollider.bounds.extents.y + 0.01f), 
+                    Color.green
+                );
+            }
+
+            RaycastHit2D[] hit = Physics2D.RaycastAll(
+                rayOrigin, 
+                Vector2.down, 
+                capsCollider.bounds.extents.y + 0.01f
+            );
+
+            foreach (RaycastHit2D h in hit) {
+                if (debug) {
+                    Debug.Log("CheckForGrounded hit: " + h.collider.gameObject.name);
+                }
+                if (h.collider.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND)) {
+                    return true;
+                }
+            }
+		}
+        return false;
     }
 
     public void SetDirectionalInput (Vector2 input) {
@@ -142,7 +195,6 @@ public class PlayerMovement : MonoBehaviour
 
 
     public void Jump(Vector2 jumpVector) {
-        // Debug.Log("Jump");
         Debug.Log("Jump Vector: " + jumpVector.ToString());
         // Debug.Log("unprocesses mag: " + jumpVector.magnitude);
         float magnitude = Mathf.Clamp(
@@ -166,11 +218,14 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public PlayerGroundedState GetProperGroundedState() {
-        if (isMovingX) {
+        if (CheckForPlayerInputX()) {
             return walkState;
         } else {
             return idleState;
         }
     }
 
+    public void SetVelocityToZero() {
+        rb.velocity = Vector2.zero;
+    }
 }

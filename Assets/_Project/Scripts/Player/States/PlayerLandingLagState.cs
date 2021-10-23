@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerIdleState : PlayerGroundedState
+public class PlayerLandingLagState : PlayerGroundedState
 {
-    public PlayerIdleState(PlayerMovement pm, StateMachine sm) : base(pm, sm)
+    private float landingLagTimer = 0f;
+
+    public PlayerLandingLagState(PlayerMovement pm, StateMachine sm) : base(pm, sm)
     {
     }
 
@@ -12,22 +14,22 @@ public class PlayerIdleState : PlayerGroundedState
     {
         base.Enter();
         // TODO play idle animation
+        landingLagTimer = pm.landingLagTime;
         pm.SetVelocityToZero();
     }
 
     public override void HandleInput()
     {
         base.HandleInput();
-
-        if (Mathf.Abs(pm.directionalInput.x) >= 0.1f)
-        {
-            sm.ChangeState(pm.walkState);
-        }
     }
 
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        landingLagTimer -= Time.deltaTime;
+        if (landingLagTimer <= 0) {
+            sm.ChangeState(pm.GetProperGroundedState());
+        }
     }
 
     public override void PhysicsUpdate()
