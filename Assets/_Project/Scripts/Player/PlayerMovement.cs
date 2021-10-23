@@ -126,6 +126,7 @@ public class PlayerMovement : MonoBehaviour
         Bounds bounds = capsCollider.bounds;
         float boundsWidth = bounds.size.x;
         int rayCount = 5;
+        float rayBuffer = 0.2f;
 
         for (int i = 0; i < rayCount; i ++) {
             float rayOriginX = (transform.position.x + capsCollider.bounds.extents.x) 
@@ -138,7 +139,7 @@ public class PlayerMovement : MonoBehaviour
             if (debug) {
                 Debug.DrawRay(
                     rayOrigin, 
-                    Vector2.down * (capsCollider.bounds.extents.y + 0.01f), 
+                    Vector2.down * (capsCollider.bounds.extents.y + rayBuffer), 
                     Color.green
                 );
             }
@@ -146,7 +147,7 @@ public class PlayerMovement : MonoBehaviour
             RaycastHit2D[] hit = Physics2D.RaycastAll(
                 rayOrigin, 
                 Vector2.down, 
-                capsCollider.bounds.extents.y + 0.01f
+                capsCollider.bounds.extents.y + rayBuffer
             );
 
             foreach (RaycastHit2D h in hit) {
@@ -166,32 +167,36 @@ public class PlayerMovement : MonoBehaviour
 	}
 
     public void Walk() {
-        float tempMoveSpeed = Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime;
-        float currentMoveDir = Mathf.Sign(rb.velocity.x);
-        float inputMoveDir = Mathf.Sign(tempMoveSpeed);
-        float processedMoveSpeed = 0;
-        float resultantMoveDir = currentMoveDir + inputMoveDir;
+        // float tempMoveSpeed = Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime;
+        // float currentMoveDir = Mathf.Sign(rb.velocity.x);
+        // float inputMoveDir = Mathf.Sign(tempMoveSpeed);
+        // float processedMoveSpeed = 0;
+        // float resultantMoveDir = currentMoveDir + inputMoveDir;
 
-        if (resultantMoveDir > 0) { // moving right
-            processedMoveSpeed = Mathf.Max(
-                Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
-                rb.velocity.x
-            );
-        } else if (resultantMoveDir < 0) { // moving left
-            processedMoveSpeed = Mathf.Min(
-                Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
-                rb.velocity.x
-            );
-        } else { // trying to move the opposite direction of current velocity
-            processedMoveSpeed = 
-                Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime +
-                rb.velocity.x;
-        }
+        // if (resultantMoveDir > 0) { // moving right
+        //     processedMoveSpeed = Mathf.Max(
+        //         Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
+        //         rb.velocity.x
+        //     );
+        // } else if (resultantMoveDir < 0) { // moving left
+        //     processedMoveSpeed = Mathf.Min(
+        //         Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
+        //         rb.velocity.x
+        //     );
+        // } else { // trying to move the opposite direction of current velocity
+        //     processedMoveSpeed = 
+        //         Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime +
+        //         rb.velocity.x;
+        // }
 
-        rb.velocity = new Vector2(
-            processedMoveSpeed,
-            rb.velocity.y
-        );
+        float processedMoveSpeed = Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime;
+
+        // rb.velocity = new Vector2(
+        //     processedMoveSpeed,
+        //     rb.velocity.y
+        // );
+        // rb.MovePosition(new Vector2(transform.position.x + processedMoveSpeed, transform.position.y));
+        transform.Translate(new Vector3(processedMoveSpeed, 0, 0));
     }
 
 
@@ -231,7 +236,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     public void SetPlayerFacingDirection(int dir) {
-        Debug.Log("SetFirection: " + dir);
         if (dir != 0 && dir != 1 && dir != -1) {
             Debug.LogError("SetPlayerFacingDirection must be called with either 1, 0 or -1. Called with: " + dir);
         }
