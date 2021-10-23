@@ -11,8 +11,8 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Enter()
     {
         base.Enter();
-        // TODO play idle animation
         pm.SetVelocityToZero();
+        PlayAnimation();
     }
 
     public override void HandleInput()
@@ -43,5 +43,13 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Exit()
     {
         base.Exit();
+    }
+
+    private void PlayAnimation() {
+        if (pm.playerFacingDir == 0) {
+            pm.animator.Play(Constants.ANIM_IDLE);
+        } else {
+            pm.animator.Play(Constants.ANIM_IDLE_SIDE);
+        } 
     }
 }

@@ -11,7 +11,7 @@ public class PlayerWalkState : PlayerGroundedState
     public override void Enter()
     {
         base.Enter();
-        // TODO play animation
+        pm.animator.Play(Constants.ANIM_WALK);
     }
 
     public override void HandleInput()
@@ -21,6 +21,12 @@ public class PlayerWalkState : PlayerGroundedState
         if (!pm.isPlayerTryingToMoveX)
         {
             sm.ChangeState(pm.idleState);
+        }
+
+        if (pm.directionalInput.x > 0) {
+            pm.SetPlayerFacingDirection(1);
+        } else if (pm.directionalInput.x < 0) {
+            pm.SetPlayerFacingDirection(-1);
         }
     }
 

@@ -23,7 +23,11 @@ public class PlayerBaseState : State
 
     public override void LogicUpdate()
     {
-
+        if (pm.playerFacingDir < 0) {
+            pm.spriteRenderer.flipX = true;
+        } else {
+            pm.spriteRenderer.flipX = false;
+        }
     }
 
     public override void PhysicsUpdate()

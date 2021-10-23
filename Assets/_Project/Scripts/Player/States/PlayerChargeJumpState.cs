@@ -20,6 +20,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
         jumpNextUpdate = false;
         isJumping = false;
         initialMousePos = GetMousePosition();
+        PlayAnimation();
     }
 
     public override void HandleInput()
@@ -37,6 +38,9 @@ public class PlayerChargeJumpState : PlayerGroundedState
             Debug.DrawRay(pm.transform.position, GetJumpVector(), Color.black);
         #endif
 
+        pm.SetPlayerFacingDirection(GetVectorDirection(GetJumpVector()));
+        PlayAnimation();
+
         if (isJumping) {
             jumpTimer -= Time.deltaTime;
         }
@@ -44,6 +48,8 @@ public class PlayerChargeJumpState : PlayerGroundedState
         if (isJumping && jumpTimer < 0) {
             sm.ChangeState(pm.jumpState);
         }
+
+        // TODO handle sprite
     }
 
     public override void PhysicsUpdate()
@@ -67,6 +73,14 @@ public class PlayerChargeJumpState : PlayerGroundedState
         base.Exit();
     }
 
+    private void PlayAnimation() {
+        if (pm.playerFacingDir == 0) {
+            pm.animator.Play(Constants.ANIM_CHARGE_JUMP_CENTER);
+        } else {
+            pm.animator.Play(Constants.ANIM_CHARGE_JUMP_SIDE);
+        }
+    }
+
     private Vector2 GetMousePosition() {
         Vector3 mousePos = Input.mousePosition;
         mousePos.z = Camera.main.nearClipPlane;
@@ -77,5 +91,23 @@ public class PlayerChargeJumpState : PlayerGroundedState
     private Vector2 GetJumpVector() {
         Vector2 currentMousePos = GetMousePosition();
         return initialMousePos - currentMousePos;
+    }
+
+    private int GetVectorDirection(Vector2 jumpVector) {
+        float jumpDir = Mathf.Sign(jumpVector.x);
+        // TODO handle upside down jumps better
+        float jumpAngle = jumpDir > 0 ? 
+            Vector2.SignedAngle(Vector2.right, jumpVector) :
+            Vector2.SignedAngle(Vector2.left, jumpVector) * -1;
+
+        if (jumpAngle > 60 && jumpAngle < 120) {
+            return 0;
+        } else {
+            if (jumpDir > 0) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
     }
 }

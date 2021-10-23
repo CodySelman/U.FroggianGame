@@ -13,9 +13,9 @@ public class PlayerLandingLagState : PlayerGroundedState
     public override void Enter()
     {
         base.Enter();
-        // TODO play idle animation
         landingLagTimer = pm.landingLagTime;
         pm.SetVelocityToZero();
+        PlayAnimation();
     }
 
     public override void HandleInput()
@@ -45,5 +45,13 @@ public class PlayerLandingLagState : PlayerGroundedState
     public override void Exit()
     {
         base.Exit();
+    }
+
+    private void PlayAnimation() {
+        if (pm.playerFacingDir == 0) {
+            pm.animator.Play(Constants.ANIM_LAND_CENTER);
+        } else {
+            pm.animator.Play(Constants.ANIM_LAND_SIDE);
+        }
     }
 }

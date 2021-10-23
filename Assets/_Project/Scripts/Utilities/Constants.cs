@@ -6,9 +6,17 @@ public class Constants
 
     // Layer Masks
     public const string LAYER_GROUND = "Ground";
-    
 
     // Player Animations
+    public const string ANIM_CHARGE_JUMP_CENTER = "charge_jump_center";
+    public const string ANIM_CHARGE_JUMP_SIDE = "charge_jump_side";
+    public const string ANIM_IDLE = "idle";
+    public const string ANIM_IDLE_SIDE = "idle_side";
+    public const string ANIM_JUMP_CENTER = "jump_center";
+    public const string ANIM_JUMP_SIDE = "jump_side";
+    public const string ANIM_LAND_CENTER = "land_center";
+    public const string ANIM_LAND_SIDE = "land_side";
+    public const string ANIM_WALK = "walk";
 
     // Input
     public const string INPUT_AXIS_HORIZONTAL = "Horizontal";

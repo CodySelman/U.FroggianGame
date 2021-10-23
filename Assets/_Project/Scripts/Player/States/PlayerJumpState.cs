@@ -14,8 +14,7 @@ public class PlayerJumpState : PlayerAirborneState
     public override void Enter()
     {
         base.Enter();
-        Debug.Log("jump state enter");
-        // TODO play animation
+        PlayAnimation();
     }
 
     public override void HandleInput()
@@ -27,7 +26,6 @@ public class PlayerJumpState : PlayerAirborneState
     {
         base.LogicUpdate();
         if (pm.isGrounded) {
-            Debug.Log("grounded, leaving jump state");
             sm.ChangeState(pm.landingLagState);
         }
     }
@@ -45,5 +43,13 @@ public class PlayerJumpState : PlayerAirborneState
     public override void Exit()
     {
         base.Exit();
+    }
+
+    private void PlayAnimation() {
+        if (pm.playerFacingDir == 0) {
+            pm.animator.Play(Constants.ANIM_JUMP_CENTER);
+        } else {
+            pm.animator.Play(Constants.ANIM_JUMP_SIDE);
+        }
     }
 }

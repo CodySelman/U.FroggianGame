@@ -33,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
 
     // movement variables
     public Vector2 directionalInput;
+    public int playerFacingDir = 0;
     public bool isGrounded = true;
     public bool isMovingX = false;
     public bool isPlayerTryingToMoveX = false;
@@ -227,5 +228,14 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetVelocityToZero() {
         rb.velocity = Vector2.zero;
+    }
+
+    public void SetPlayerFacingDirection(int dir) {
+        Debug.Log("SetFirection: " + dir);
+        if (dir != 0 && dir != 1 && dir != -1) {
+            Debug.LogError("SetPlayerFacingDirection must be called with either 1, 0 or -1. Called with: " + dir);
+        }
+
+        playerFacingDir = dir;
     }
 }
