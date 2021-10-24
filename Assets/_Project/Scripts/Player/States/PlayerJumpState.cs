@@ -15,6 +15,7 @@ public class PlayerJumpState : PlayerAirborneState
     {
         base.Enter();
         PlayAnimation();
+        pm.ActivateStunMaterial(true);
     }
 
     public override void HandleInput()
@@ -43,6 +44,7 @@ public class PlayerJumpState : PlayerAirborneState
     public override void Exit()
     {
         base.Exit();
+        pm.ActivateStunMaterial(false);
     }
 
     private void PlayAnimation() {

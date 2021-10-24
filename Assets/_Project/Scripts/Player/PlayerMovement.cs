@@ -7,13 +7,19 @@ using TMPro;
 public class PlayerMovement : MonoBehaviour
 {
     // component references
+    [SerializeField]
+    PlayerHead playerHead;
     public SpriteRenderer spriteRenderer;
     public Animator animator;
     public TMP_Text stateText;
-    [SerializeField]
     Rigidbody2D rb;
-    // CapsuleCollider2D capsCollider;
+    [SerializeField]
+    CapsuleCollider2D capsCollider;
     BoxCollider2D boxCollider;
+    [SerializeField]
+    private PhysicsMaterial2D defaultMaterial;
+    [SerializeField]
+    private PhysicsMaterial2D stunMaterial;
 
     public bool debug = false;
 
@@ -54,8 +60,9 @@ public class PlayerMovement : MonoBehaviour
     void Start() {
         // components 
         rb = GetComponent<Rigidbody2D>();
-        // capsCollider = GetComponent<CapsuleCollider2D>();
+        capsCollider = GetComponent<CapsuleCollider2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        ActivateStunMaterial(false);
 
         // State Machine
         sm = new StateMachine();
@@ -106,12 +113,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void HandleCollision(Collision2D collision) {
-        // if (collision.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND)
-        // ) {
-        //     isGrounded = true;
-        // } else {
-        //     isGrounded = false;
-        // }
+        if (sm.CurrentState == jumpState) {
+            Debug.Log("Collision. isGrounded: " + isGrounded);
+            // Debug.Log(collision.otherCollider.);
+        }
     }
 
     bool CheckForMovementX() {
@@ -155,7 +160,7 @@ public class PlayerMovement : MonoBehaviour
 
             foreach (RaycastHit2D h in hit) {
                 if (debug) {
-                    Debug.Log("CheckForGrounded hit: " + h.collider.gameObject.name);
+                    // Debug.Log("CheckForGrounded hit: " + h.collider.gameObject.name);
                 }
                 if (h.collider.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND)) {
                     return true;
@@ -204,7 +209,7 @@ public class PlayerMovement : MonoBehaviour
 
 
     public void Jump(Vector2 jumpVector) {
-        Debug.Log("Jump Vector: " + jumpVector.ToString());
+        // Debug.Log("Jump Vector: " + jumpVector.ToString());
         // Debug.Log("unprocesses mag: " + jumpVector.magnitude);
         float magnitude = Mathf.Clamp(
             jumpVector.magnitude, 
@@ -244,5 +249,23 @@ public class PlayerMovement : MonoBehaviour
         }
 
         playerFacingDir = dir;
+    }
+
+    public void ActivateStunMaterial(bool shouldActivate = true) {
+        if (shouldActivate) {
+            // rb.sharedMaterial = stunMaterial;
+            // boxCollider.sharedMaterial = stunMaterial;
+            capsCollider.sharedMaterial = stunMaterial;
+        } else {
+            // rb.sharedMaterial = defaultMaterial;
+            // boxCollider.sharedMaterial = defaultMaterial;
+            capsCollider.sharedMaterial = defaultMaterial;
+        }
+    }
+
+    public void ProcessHeadCollision(Collision2D collision) {
+        if (!isGrounded) {
+            sm.ChangeState(stunState);
+        }
     }
 }

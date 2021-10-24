@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStunState : PlayerGroundedState
+public class PlayerStunState : PlayerAirborneState
 {
     public PlayerStunState(PlayerMovement pm, StateMachine sm) : base(pm, sm)
     {
@@ -37,5 +37,13 @@ public class PlayerStunState : PlayerGroundedState
     public override void Exit()
     {
         base.Exit();
+    }
+
+    private void PlayAnimation() {
+        if (pm.playerFacingDir == 0) {
+            // play center animation
+        } else {
+            // play side animation
+        }
     }
 }
