@@ -8,9 +8,15 @@ public class Constants
     public const string LAYER_GROUND = "Ground";
 
     // Player Animations
+    public const string ANIM_BACK = "back";
+    public const string ANIM_BALL = "ball";
+    public const string ANIM_BONK_CENTER = "bonk_center";
+    public const string ANIM_BONK_SIDE = "bonk_side";
     public const string ANIM_CHARGE_JUMP_CENTER = "charge_jump_center";
     public const string ANIM_CHARGE_JUMP_SIDE = "charge_jump_side";
     public const string ANIM_IDLE = "idle";
+    public const string ANIM_IDLE_BACK = "idle_back";
+    
     public const string ANIM_IDLE_SIDE = "idle_side";
     public const string ANIM_JUMP_CENTER = "jump_center";
     public const string ANIM_JUMP_SIDE = "jump_side";
