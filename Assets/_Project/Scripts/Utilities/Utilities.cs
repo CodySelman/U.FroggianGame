@@ -12,4 +12,15 @@ public static class Utilities
     {
         return RadianToVector2(degree * Mathf.Deg2Rad);
     }
+
+    public static bool IsAnimationFinished(Animator animator, string animationName) {
+        AnimatorStateInfo currentAnimState = animator.GetCurrentAnimatorStateInfo(0);
+        return currentAnimState.IsName(animationName) 
+            && currentAnimState.normalizedTime >= 1;
+    }
+
+    private static bool IsAnimationPlayingAndFinished(Animator animator, string animationName) {
+        return animator.GetCurrentAnimatorStateInfo(0).IsName(animationName)
+            && IsAnimationFinished(animator, animationName);
+    }
 }

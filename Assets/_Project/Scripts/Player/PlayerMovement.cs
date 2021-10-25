@@ -12,9 +12,10 @@ public class PlayerMovement : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     public Animator animator;
     public TMP_Text stateText;
-    Rigidbody2D rb;
-    [SerializeField]
-    CapsuleCollider2D capsCollider;
+    [System.NonSerialized]
+    public Rigidbody2D rb;
+    // [SerializeField]
+    // CapsuleCollider2D capsCollider;
     BoxCollider2D boxCollider;
     [SerializeField]
     private PhysicsMaterial2D defaultMaterial;
@@ -56,13 +57,16 @@ public class PlayerMovement : MonoBehaviour
     private float minJumpAngle = 0f;
     public float jumpSquatTime = 0.025f;
     public float landingLagTime = 0.25f;
+    public float bonkSpriteTime = 0.5f;
+    public float ballSpinSpeed = 1f;
+    public float ballExitVelocity = 0.5f;
 
     void Start() {
         // components 
         rb = GetComponent<Rigidbody2D>();
-        capsCollider = GetComponent<CapsuleCollider2D>();
+        // capsCollider = GetComponent<CapsuleCollider2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        ActivateStunMaterial(false);
+        // ActivateStunMaterial(false);
 
         // State Machine
         sm = new StateMachine();
@@ -81,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Update() {
         isPlayerTryingToMoveX = CheckForPlayerInputX();
+        isGrounded = CheckForGrounded();
 
         sm.CurrentState.HandleInput();
         sm.CurrentState.LogicUpdate();
@@ -94,7 +99,6 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate() {
         isMovingX = CheckForMovementX();
-        isGrounded = CheckForGrounded();
 
         sm.CurrentState.PhysicsUpdate();
     }
@@ -134,10 +138,18 @@ public class PlayerMovement : MonoBehaviour
         float boundsWidth = bounds.size.x;
         int rayCount = 5;
         float rayBuffer = 0.05f;
+        // float checkingWidth = transform.position.x + bounds.extents.x + 0.05f;
 
         for (int i = 0; i < rayCount; i ++) {
             float rayOriginX = (transform.position.x + bounds.extents.x) 
                 - ((bounds.size.x / (rayCount - 1)) * i);
+            // buffer to prevent getting stuck on ledge
+            if (i == 0) {
+                rayOriginX += 0.025f;
+            } 
+            else if (i == (rayCount - 1)) {
+                rayOriginX -= 0.025f;
+            }
 
             Vector2 rayOrigin = new Vector2(
                 rayOriginX,
@@ -147,7 +159,7 @@ public class PlayerMovement : MonoBehaviour
             if (debug) {
                 Debug.DrawRay(
                     rayOrigin, 
-                    Vector2.down * (rayBuffer), 
+                    Vector2.down * rayBuffer, 
                     Color.green
                 );
             }
@@ -160,7 +172,7 @@ public class PlayerMovement : MonoBehaviour
 
             foreach (RaycastHit2D h in hit) {
                 if (debug) {
-                    // Debug.Log("CheckForGrounded hit: " + h.collider.gameObject.name);
+                    Debug.Log("CheckForGrounded hit: " + h.collider.gameObject.name);
                 }
                 if (h.collider.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND)) {
                     return true;
@@ -251,21 +263,35 @@ public class PlayerMovement : MonoBehaviour
         playerFacingDir = dir;
     }
 
-    public void ActivateStunMaterial(bool shouldActivate = true) {
-        if (shouldActivate) {
-            // rb.sharedMaterial = stunMaterial;
-            // boxCollider.sharedMaterial = stunMaterial;
-            capsCollider.sharedMaterial = stunMaterial;
-        } else {
-            // rb.sharedMaterial = defaultMaterial;
-            // boxCollider.sharedMaterial = defaultMaterial;
-            capsCollider.sharedMaterial = defaultMaterial;
+    // public void ActivateStunMaterial(bool shouldActivate = true) {
+    //     if (shouldActivate) {
+    //         // rb.sharedMaterial = stunMaterial;
+    //         // boxCollider.sharedMaterial = stunMaterial;
+    //         capsCollider.sharedMaterial = stunMaterial;
+    //     } else {
+    //         // rb.sharedMaterial = defaultMaterial;
+    //         // boxCollider.sharedMaterial = defaultMaterial;
+    //         capsCollider.sharedMaterial = defaultMaterial;
+    //     }
+    // }
+
+    public void ProcessHeadCollision(Collision2D collision) {
+        if (sm.CurrentState == stunState) {
+            stunState.GetBonked();
+        }
+        
+        if (
+            sm.CurrentState == jumpState
+            && sm.CurrentState != stunState 
+            && !isGrounded 
+            && sm.CurrentState != landingLagState
+        ) {
+            sm.ChangeState(stunState);
         }
     }
 
-    public void ProcessHeadCollision(Collision2D collision) {
-        if (!isGrounded) {
-            sm.ChangeState(stunState);
-        }
+    public void TurnIntoBall(bool shouldBall = true) {
+        // boxCollider.enabled = !shouldBall;
+        boxCollider.isTrigger = shouldBall;
     }
 }

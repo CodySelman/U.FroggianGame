@@ -689,12 +689,12 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 1077735715}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 9cf506c852dfbe54f881ef1b8279aba0, type: 2}
+  m_Material: {fileID: 6200000, guid: def1a14a67d57714b8542f4fe4669db1, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.125}
-  m_Size: {x: 1.55, y: 1}
+  m_Offset: {x: 0, y: 0.15}
+  m_Size: {x: 1.35, y: 1.25}
   m_Direction: 1
 --- !u!114 &1077735718
 MonoBehaviour:
@@ -765,7 +765,6 @@ MonoBehaviour:
   spriteRenderer: {fileID: 1456345878}
   animator: {fileID: 1456345879}
   stateText: {fileID: 1978214164}
-  capsCollider: {fileID: 1077735717}
   defaultMaterial: {fileID: 6200000, guid: 9cf506c852dfbe54f881ef1b8279aba0, type: 2}
   stunMaterial: {fileID: 6200000, guid: def1a14a67d57714b8542f4fe4669db1, type: 2}
   debug: 1
@@ -781,6 +780,8 @@ MonoBehaviour:
   minJumpAngle: 30
   jumpSquatTime: 0.1
   landingLagTime: 0.25
+  bonkSpriteTime: 0.25
+  ballSpinSpeed: 70
 --- !u!114 &1114039932
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -788,7 +789,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1114039929}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 718ec30d0a6ec574db16a5b4b4b480b1, type: 3}
   m_Name: 
@@ -801,7 +802,7 @@ MonoBehaviour:
   horizontalRaySpacing: 0
   verticalRaySpacing: 0
   collider: {fileID: 0}
-  maxSlopeAngle: 80
+  maxSlopeAngle: 70
   playerInput: {x: 0, y: 0}
 --- !u!61 &1114039933
 BoxCollider2D:
@@ -986,7 +987,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1456345876}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.8675, z: 0}
+  m_LocalPosition: {x: 0, y: 0.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1114039930}
@@ -1032,7 +1033,7 @@ SpriteRenderer:
   m_SortingLayerID: -1305770369
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 40c32a659cb41004f81139fcc7025244, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 37ad99f4c7181f548b9e06d03770667d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

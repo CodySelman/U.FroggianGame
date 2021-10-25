@@ -12,6 +12,7 @@ public class PlayerWalkState : PlayerGroundedState
     {
         base.Enter();
         pm.animator.Play(Constants.ANIM_WALK);
+        pm.rb.velocity = Vector2.zero;
     }
 
     public override void HandleInput()

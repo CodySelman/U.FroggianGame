@@ -14,6 +14,8 @@ public class Constants
     public const string ANIM_BONK_SIDE = "bonk_side";
     public const string ANIM_CHARGE_JUMP_CENTER = "charge_jump_center";
     public const string ANIM_CHARGE_JUMP_SIDE = "charge_jump_side";
+    public const string ANIM_FALL_CENTER = "fall_center";
+    public const string ANIM_FALL_SIDE = "fall_side";
     public const string ANIM_IDLE = "idle";
     public const string ANIM_IDLE_BACK = "idle_back";
     
