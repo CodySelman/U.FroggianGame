@@ -16,11 +16,14 @@ public class PlayerChargeJumpState : PlayerGroundedState
     public override void Enter()
     {
         base.Enter();
+        Debug.Log("enter");
         // TODO play animation
         jumpNextUpdate = false;
         isJumping = false;
         initialMousePos = GetMousePosition();
+        Debug.Log("initialMousePos: " + initialMousePos);
         PlayAnimation();
+        pm.arrow.ShowSpriteRenderer(true);
     }
 
     public override void HandleInput()
@@ -34,11 +37,14 @@ public class PlayerChargeJumpState : PlayerGroundedState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        Vector2 jumpVector = GetJumpVector();
+        Debug.Log("jumpVector: " + jumpVector);
+
         #if UNITY_EDITOR
-            Debug.DrawRay(pm.transform.position, GetJumpVector(), Color.black);
+            Debug.DrawRay(pm.transform.position, jumpVector, Color.black);
         #endif
 
-        pm.SetPlayerFacingDirection(GetVectorDirection(GetJumpVector()));
+        pm.SetPlayerFacingDirection(GetVectorDirection(jumpVector));
         PlayAnimation();
 
         if (isJumping) {
@@ -49,7 +55,8 @@ public class PlayerChargeJumpState : PlayerGroundedState
             sm.ChangeState(pm.jumpState);
         }
 
-        // TODO handle sprite
+        SetArrowFrame(jumpVector);
+        SetArrowAnchorRotation(jumpVector);
     }
 
     public override void PhysicsUpdate()
@@ -71,6 +78,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
     public override void Exit()
     {
         base.Exit();
+        pm.arrow.ShowSpriteRenderer(false);
     }
 
     private void PlayAnimation() {
@@ -90,6 +98,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
 
     private Vector2 GetJumpVector() {
         Vector2 currentMousePos = GetMousePosition();
+        Debug.Log("currentMoustPos: " + currentMousePos);
         return initialMousePos - currentMousePos;
     }
 
@@ -109,5 +118,30 @@ public class PlayerChargeJumpState : PlayerGroundedState
                 return -1;
             }
         }
+    }
+
+    private void SetArrowFrame(Vector2 jumpVector) {
+        Debug.Log("SetArrowFrame");
+        float vectorRatio = jumpVector.magnitude / pm.maxJumpMagnitude;
+        Debug.Log("vectorRatio: " + vectorRatio);
+
+        // if jumpVector <= minVector 
+        if (jumpVector.magnitude <= pm.minJumpMagnitude) {
+            pm.arrow.SetArrowSprite(0);
+        } else if (jumpVector.magnitude >= pm.maxJumpMagnitude) {
+            pm.arrow.PlayFullyChargedAnimation();
+        } else {
+            int sprite = Mathf.CeilToInt(vectorRatio * pm.arrow.arrows.Count) - 1;
+            Debug.Log(sprite);
+            pm.arrow.SetArrowSprite(sprite);
+        }
+    }
+
+    private void SetArrowAnchorRotation(Vector2 jumpVector) {
+        float angle = Vector2.SignedAngle(Vector2.up, jumpVector);
+        Debug.Log("angle: " + angle);
+        // TODO this might break if you change minJumpAngle
+        float clampedAngle = Mathf.Clamp(angle, pm.minJumpAngle - 90, pm.minJumpAngle + 30);
+        pm.arrowAnchor.transform.rotation = Quaternion.Euler(0, 0, clampedAngle);
     }
 }

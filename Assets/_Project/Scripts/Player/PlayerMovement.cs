@@ -21,6 +21,8 @@ public class PlayerMovement : MonoBehaviour
     private PhysicsMaterial2D defaultMaterial;
     [SerializeField]
     private PhysicsMaterial2D stunMaterial;
+    public Arrow arrow;
+    public GameObject arrowAnchor;
 
     public bool debug = false;
 
@@ -49,12 +51,9 @@ public class PlayerMovement : MonoBehaviour
 	private float moveSpeed = 6;
     [SerializeField]
     private float jumpForce = 5;
-	[SerializeField]
-    private float minJumpMagnitude = 0.1f;
-	[SerializeField]
-    private float maxJumpMagnitude = 5f;
-    [SerializeField]
-    private float minJumpAngle = 0f;
+    public float minJumpMagnitude = 0.1f;
+    public float maxJumpMagnitude = 5f;
+    public float minJumpAngle = 0f;
     public float jumpSquatTime = 0.025f;
     public float landingLagTime = 0.25f;
     public float bonkSpriteTime = 0.5f;
@@ -77,6 +76,8 @@ public class PlayerMovement : MonoBehaviour
         landingLagState = new PlayerLandingLagState(this, sm);
         stunState = new PlayerStunState(this, sm);
         sm.Initialize(idleState);
+
+        arrow.ShowSpriteRenderer(false);
 
         #if !UNITY_EDITOR
             debug = false;
@@ -219,7 +220,6 @@ public class PlayerMovement : MonoBehaviour
         transform.Translate(new Vector3(processedMoveSpeed, 0, 0));
     }
 
-
     public void Jump(Vector2 jumpVector) {
         // Debug.Log("Jump Vector: " + jumpVector.ToString());
         // Debug.Log("unprocesses mag: " + jumpVector.magnitude);
@@ -279,7 +279,7 @@ public class PlayerMovement : MonoBehaviour
         if (sm.CurrentState == stunState) {
             stunState.GetBonked();
         }
-        
+
         if (
             sm.CurrentState == jumpState
             && sm.CurrentState != stunState 

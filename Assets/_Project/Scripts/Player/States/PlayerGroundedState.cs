@@ -17,7 +17,9 @@ public class PlayerGroundedState : PlayerBaseState
     {
         base.HandleInput();
 
-        if (Input.GetMouseButtonDown(0)) {
+        if (sm.CurrentState != pm.chargeJumpState 
+            && (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
+        ) {
             sm.ChangeState(pm.chargeJumpState);
         }
 

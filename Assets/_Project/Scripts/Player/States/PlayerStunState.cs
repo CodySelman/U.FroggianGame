@@ -65,6 +65,11 @@ public class PlayerStunState : PlayerAirborneState
 
     private void PlayBallAnimation() {
         pm.animator.Play(Constants.ANIM_BALL);
+        if (pm.playerFacingDir == 0) {
+            pm.animator.Play(Constants.ANIM_BALL);
+        } else {
+            pm.animator.Play(Constants.ANIM_BALL_SIDE);
+        }
     }
 
     private void RotatePlayerSprite() {

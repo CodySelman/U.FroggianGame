@@ -41,6 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BackgroundParallax
+    uniqueID: 2719812169
+    locked: 0
+  - name: Background
+    uniqueID: 3602353205
+    locked: 0
+  - name: Platforms
+    uniqueID: 2348455243
+    locked: 0
   - name: Player
     uniqueID: 2989196927
+    locked: 0
+  - name: Arrow
+    uniqueID: 714741275
     locked: 0
