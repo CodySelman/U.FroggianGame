@@ -32,6 +32,9 @@ public class PlayerStunState : PlayerAirborneState
         if (isBall) {
             RotatePlayerSprite();
         }
+        if (isBall) {
+            PlayBallAnimation();
+        }
 
         if (CheckForExitConditions()) {
             sm.ChangeState(pm.GetProperGroundedState());
@@ -64,7 +67,7 @@ public class PlayerStunState : PlayerAirborneState
     }
 
     private void PlayBallAnimation() {
-        pm.animator.Play(Constants.ANIM_BALL);
+        Debug.Log("facingDir: " + pm.playerFacingDir);
         if (pm.playerFacingDir == 0) {
             pm.animator.Play(Constants.ANIM_BALL);
         } else {
@@ -97,9 +100,9 @@ public class PlayerStunState : PlayerAirborneState
     }
 
     public void GetBonked() {
-        Debug.Log("GetBonked");
+        // Debug.Log("GetBonked");
         if (!isBall) {
-            pm.animator.Play(Constants.ANIM_BALL);
+            // PlayBallAnimation();
             isBall = true;
             pm.TurnIntoBall(true);
         }

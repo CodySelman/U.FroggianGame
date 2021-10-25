@@ -173,7 +173,7 @@ public class PlayerMovement : MonoBehaviour
 
             foreach (RaycastHit2D h in hit) {
                 if (debug) {
-                    Debug.Log("CheckForGrounded hit: " + h.collider.gameObject.name);
+                    // Debug.Log("CheckForGrounded hit: " + h.collider.gameObject.name);
                 }
                 if (h.collider.gameObject.layer == LayerMask.NameToLayer(Constants.LAYER_GROUND)) {
                     return true;

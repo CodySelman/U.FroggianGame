@@ -16,12 +16,10 @@ public class PlayerChargeJumpState : PlayerGroundedState
     public override void Enter()
     {
         base.Enter();
-        Debug.Log("enter");
         // TODO play animation
         jumpNextUpdate = false;
         isJumping = false;
         initialMousePos = GetMousePosition();
-        Debug.Log("initialMousePos: " + initialMousePos);
         PlayAnimation();
         pm.arrow.ShowSpriteRenderer(true);
     }
@@ -38,7 +36,6 @@ public class PlayerChargeJumpState : PlayerGroundedState
     {
         base.LogicUpdate();
         Vector2 jumpVector = GetJumpVector();
-        Debug.Log("jumpVector: " + jumpVector);
 
         #if UNITY_EDITOR
             Debug.DrawRay(pm.transform.position, jumpVector, Color.black);
@@ -98,7 +95,6 @@ public class PlayerChargeJumpState : PlayerGroundedState
 
     private Vector2 GetJumpVector() {
         Vector2 currentMousePos = GetMousePosition();
-        Debug.Log("currentMoustPos: " + currentMousePos);
         return initialMousePos - currentMousePos;
     }
 
@@ -121,9 +117,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
     }
 
     private void SetArrowFrame(Vector2 jumpVector) {
-        Debug.Log("SetArrowFrame");
         float vectorRatio = jumpVector.magnitude / pm.maxJumpMagnitude;
-        Debug.Log("vectorRatio: " + vectorRatio);
 
         // if jumpVector <= minVector 
         if (jumpVector.magnitude <= pm.minJumpMagnitude) {
@@ -132,14 +126,12 @@ public class PlayerChargeJumpState : PlayerGroundedState
             pm.arrow.PlayFullyChargedAnimation();
         } else {
             int sprite = Mathf.CeilToInt(vectorRatio * pm.arrow.arrows.Count) - 1;
-            Debug.Log(sprite);
             pm.arrow.SetArrowSprite(sprite);
         }
     }
 
     private void SetArrowAnchorRotation(Vector2 jumpVector) {
         float angle = Vector2.SignedAngle(Vector2.up, jumpVector);
-        Debug.Log("angle: " + angle);
         // TODO this might break if you change minJumpAngle
         float clampedAngle = Mathf.Clamp(angle, pm.minJumpAngle - 90, pm.minJumpAngle + 30);
         pm.arrowAnchor.transform.rotation = Quaternion.Euler(0, 0, clampedAngle);
