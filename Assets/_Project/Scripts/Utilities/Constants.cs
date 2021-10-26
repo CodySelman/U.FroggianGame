@@ -6,6 +6,7 @@ public class Constants
 
     // Layer Masks
     public const string LAYER_GROUND = "Ground";
+    public const string LAYER_PLAYER = "Player";
 
     // Player Animations
     public const string ANIM_BACK = "back";
