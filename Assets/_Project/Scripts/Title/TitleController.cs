@@ -11,6 +11,11 @@ public class TitleController : MonoBehaviour
     [SerializeField]
     GameObject settingsOptions;
 
+    void Start() {
+        mainOptions.SetActive(true);
+        settingsOptions.SetActive(false);
+    }
+
     public void LoadGame() {
         GameController.instance.PlayAudio(SoundName.SfxButtonMouseClick);
         GameController.instance.LoadGame();

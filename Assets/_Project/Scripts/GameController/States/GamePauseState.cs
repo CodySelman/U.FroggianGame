@@ -11,6 +11,9 @@ public class GamePauseState : GameBaseState
     public override void Enter()
     {
         base.Enter();
+        GameController.instance.isPaused = true;
+        PauseMenuController.instance.ShowPauseMenu(true);
+        Time.timeScale = 0;
     }
 
     public override void HandleInput()
@@ -37,5 +40,8 @@ public class GamePauseState : GameBaseState
     public override void Exit()
     {
         base.Exit();
+        GameController.instance.isPaused = false;
+        PauseMenuController.instance.ShowPauseMenu(false);
+        Time.timeScale = 1;
     }
 }

@@ -84,11 +84,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update() {
-        isPlayerTryingToMoveX = CheckForPlayerInputX();
-        isGrounded = CheckForGrounded();
+        if (!GameController.instance.isPaused) {
+            isPlayerTryingToMoveX = CheckForPlayerInputX();
+            isGrounded = CheckForGrounded();
 
-        sm.CurrentState.HandleInput();
-        sm.CurrentState.LogicUpdate();
+            sm.CurrentState.HandleInput();
+            sm.CurrentState.LogicUpdate();
+        }
 
         #if UNITY_EDITOR
             if (debug) {
@@ -98,14 +100,18 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void FixedUpdate() {
-        isMovingX = CheckForMovementX();
+        if (!GameController.instance.isPaused) {
+            isMovingX = CheckForMovementX();
 
-        sm.CurrentState.PhysicsUpdate();
+            sm.CurrentState.PhysicsUpdate();
+        }
     }
 
     void LateUpdate()
     {
-        sm.CurrentState.LateUpdate();
+        if (!GameController.instance.isPaused) {
+            sm.CurrentState.LateUpdate();
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision) {

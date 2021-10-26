@@ -83,7 +83,8 @@ public class GameController : MonoBehaviour
         sm.CurrentState.LateUpdate();
     }
 
-    void TogglePause() {
+    public void TogglePause() {
+        Debug.Log("TogglePause");
         isPaused = !isPaused;
         if (isPaused) {
             sm.ChangeState(pauseState);
@@ -93,6 +94,7 @@ public class GameController : MonoBehaviour
     }
 
     public void ListenForPause() {
+        Debug.Log("ListenForPause");
         if (Input.GetKeyDown(KeyCode.Escape)) {
             TogglePause();
         }
