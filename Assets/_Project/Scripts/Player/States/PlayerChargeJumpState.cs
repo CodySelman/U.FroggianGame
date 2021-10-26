@@ -105,7 +105,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
             Vector2.SignedAngle(Vector2.right, jumpVector) :
             Vector2.SignedAngle(Vector2.left, jumpVector) * -1;
 
-        if (jumpAngle > 60 && jumpAngle < 120) {
+        if (jumpAngle > 70 && jumpAngle < 110) {
             return 0;
         } else {
             if (jumpDir > 0) {

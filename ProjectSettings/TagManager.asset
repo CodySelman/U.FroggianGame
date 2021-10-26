@@ -47,6 +47,9 @@ TagManager:
   - name: Background
     uniqueID: 3602353205
     locked: 0
+  - name: Platform Background
+    uniqueID: 3925322465
+    locked: 0
   - name: Platforms
     uniqueID: 2348455243
     locked: 0
