@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TitleController : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class TitleController : MonoBehaviour
     GameObject mainOptions;
     [SerializeField]
     GameObject settingsOptions;
+    [SerializeField]
+    Slider masterVolumeSlider;
 
     void Start() {
         mainOptions.SetActive(true);
@@ -31,9 +34,16 @@ public class TitleController : MonoBehaviour
         showSettings = !showSettings;
         mainOptions.SetActive(!showSettings);
         settingsOptions.SetActive(showSettings);
+        if (showSettings) {
+            InitializeSliderVolume();
+        }
     }
 
     public void SetMasterVolume(float value) {
         GameController.instance.SetMasterVolume(value);
+    }
+
+    void InitializeSliderVolume() {
+        masterVolumeSlider.value = GameController.instance.GetMasterVolume();
     }
 }

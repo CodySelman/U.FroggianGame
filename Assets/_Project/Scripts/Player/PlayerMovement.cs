@@ -84,12 +84,15 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update() {
-        if (!GameController.instance.isPaused) {
+        if (!GameController.instance.isPaused && !GameController.instance.hasWon) {
             isPlayerTryingToMoveX = CheckForPlayerInputX();
             isGrounded = CheckForGrounded();
 
             sm.CurrentState.HandleInput();
             sm.CurrentState.LogicUpdate();
+        }
+        if (GameController.instance.hasWon) {
+            rb.velocity = new Vector2(0, rb.velocity.y);
         }
 
         #if UNITY_EDITOR
@@ -100,7 +103,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void FixedUpdate() {
-        if (!GameController.instance.isPaused) {
+        if (!GameController.instance.isPaused && !GameController.instance.hasWon) {
             isMovingX = CheckForMovementX();
 
             sm.CurrentState.PhysicsUpdate();
@@ -109,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
 
     void LateUpdate()
     {
-        if (!GameController.instance.isPaused) {
+        if (!GameController.instance.isPaused && !GameController.instance.hasWon) {
             sm.CurrentState.LateUpdate();
         }
     }

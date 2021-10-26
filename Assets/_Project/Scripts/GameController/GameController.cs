@@ -38,6 +38,8 @@ public class GameController : MonoBehaviour
     public GamePauseState pauseState;
     [System.NonSerialized]
     public GameTitleState titleState;
+    [System.NonSerialized]
+    public GameWinState winState;
 
     // components
     [SerializeField]
@@ -47,6 +49,7 @@ public class GameController : MonoBehaviour
 
     // variables
     public bool isPaused = false;
+    public bool hasWon = false;
     public Sound[] sounds;
 
     void Awake() {
@@ -66,6 +69,7 @@ public class GameController : MonoBehaviour
         normalState = new GameNormalState(this, sm);
         pauseState = new GamePauseState(this, sm);
         titleState = new GameTitleState(this, sm);
+        winState = new GameWinState(this, sm);
         sm.Initialize(titleState);
     }
 
@@ -200,5 +204,9 @@ public class GameController : MonoBehaviour
                 StopAudio(SoundName.MusicMain);
             }
         }
+    }
+
+    public void WinGame() {
+        sm.ChangeState(winState);
     }
 }
