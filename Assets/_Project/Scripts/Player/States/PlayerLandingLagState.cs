@@ -16,6 +16,12 @@ public class PlayerLandingLagState : PlayerGroundedState
         landingLagTimer = pm.landingLagTime;
         pm.SetVelocityToZero();
         PlayAnimation();
+
+        if (Random.Range(0, 1) > 0.5f) {
+            GameController.instance.PlayAudio(SoundName.SfxLand1);
+        } else {
+            GameController.instance.PlayAudio(SoundName.SfxLand2);
+        }
     }
 
     public override void HandleInput()

@@ -59,13 +59,12 @@ public class PlayerMovement : MonoBehaviour
     public float bonkSpriteTime = 0.5f;
     public float ballSpinSpeed = 1f;
     public float ballExitVelocity = 0.5f;
+    public float walkSoundTimer = 0.1f;
 
     void Start() {
         // components 
         rb = GetComponent<Rigidbody2D>();
-        // capsCollider = GetComponent<CapsuleCollider2D>();
         boxCollider = GetComponent<BoxCollider2D>();
-        // ActivateStunMaterial(false);
 
         // State Machine
         sm = new StateMachine();
@@ -188,41 +187,19 @@ public class PlayerMovement : MonoBehaviour
 	}
 
     public void Walk() {
-        // float tempMoveSpeed = Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime;
-        // float currentMoveDir = Mathf.Sign(rb.velocity.x);
-        // float inputMoveDir = Mathf.Sign(tempMoveSpeed);
-        // float processedMoveSpeed = 0;
-        // float resultantMoveDir = currentMoveDir + inputMoveDir;
-
-        // if (resultantMoveDir > 0) { // moving right
-        //     processedMoveSpeed = Mathf.Max(
-        //         Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
-        //         rb.velocity.x
-        //     );
-        // } else if (resultantMoveDir < 0) { // moving left
-        //     processedMoveSpeed = Mathf.Min(
-        //         Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime,
-        //         rb.velocity.x
-        //     );
-        // } else { // trying to move the opposite direction of current velocity
-        //     processedMoveSpeed = 
-        //         Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime +
-        //         rb.velocity.x;
-        // }
-
         float processedMoveSpeed = Input.GetAxis(Constants.INPUT_AXIS_HORIZONTAL) * moveSpeed * Time.deltaTime;
-
-        // rb.velocity = new Vector2(
-        //     processedMoveSpeed,
-        //     rb.velocity.y
-        // );
-        // rb.MovePosition(new Vector2(transform.position.x + processedMoveSpeed, transform.position.y));
         transform.Translate(new Vector3(processedMoveSpeed, 0, 0));
     }
 
     public void Jump(Vector2 jumpVector) {
         // Debug.Log("Jump Vector: " + jumpVector.ToString());
         // Debug.Log("unprocesses mag: " + jumpVector.magnitude);
+        if (Random.Range(0, 1) > 0.5f) {
+            GameController.instance.PlayAudio(SoundName.SfxJump1);
+        } else {
+            GameController.instance.PlayAudio(SoundName.SfxJump2);
+        }
+
         float magnitude = Mathf.Clamp(
             jumpVector.magnitude, 
             minJumpMagnitude, 
@@ -286,6 +263,7 @@ public class PlayerMovement : MonoBehaviour
             && !isGrounded 
             && sm.CurrentState != landingLagState
         ) {
+            GameController.instance.PlayAudio(SoundName.SfxBounce);
             sm.ChangeState(stunState);
         }
     }

@@ -22,6 +22,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
         initialMousePos = GetMousePosition();
         PlayAnimation();
         pm.arrow.ShowSpriteRenderer(true);
+        GameController.instance.PlayAudio(SoundName.SfxChargeUpSlow);
     }
 
     public override void HandleInput()
@@ -76,6 +77,7 @@ public class PlayerChargeJumpState : PlayerGroundedState
     {
         base.Exit();
         pm.arrow.ShowSpriteRenderer(false);
+        GameController.instance.StopAudio(SoundName.SfxChargeUpSlow);
     }
 
     private void PlayAnimation() {

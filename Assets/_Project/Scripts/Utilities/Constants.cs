@@ -1,6 +1,8 @@
 public class Constants
 {
     // Scene Names
+    public const string SCENE_GAME = "Game";
+    public const string SCENE_TITLE = "Title";
 
     // Tags
 
@@ -38,6 +40,4 @@ public class Constants
 
     // Audio Mixer Parameters
     public const string AUDIO_MASTER_VOLUME = "MasterVolume";
-    public const string AUDIO_MUSIC_VOLUME = "MusicVolume";
-    public const string AUDIO_SFX_VOLUME = "SfxVolume";
 }

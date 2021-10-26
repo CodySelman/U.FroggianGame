@@ -37,7 +37,7 @@ public class PlayerStunState : PlayerAirborneState
         }
 
         if (CheckForExitConditions()) {
-            sm.ChangeState(pm.GetProperGroundedState());
+            sm.ChangeState(pm.landingLagState);
         }
     }
 
@@ -67,7 +67,7 @@ public class PlayerStunState : PlayerAirborneState
     }
 
     private void PlayBallAnimation() {
-        Debug.Log("facingDir: " + pm.playerFacingDir);
+        // Debug.Log("facingDir: " + pm.playerFacingDir);
         if (pm.playerFacingDir == 0) {
             pm.animator.Play(Constants.ANIM_BALL);
         } else {
@@ -100,6 +100,7 @@ public class PlayerStunState : PlayerAirborneState
     }
 
     public void GetBonked() {
+        GameController.instance.PlayAudio(SoundName.SfxBounce);
         // Debug.Log("GetBonked");
         if (!isBall) {
             // PlayBallAnimation();

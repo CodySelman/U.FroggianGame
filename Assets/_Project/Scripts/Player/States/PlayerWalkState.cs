@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerWalkState : PlayerGroundedState
 {
+    private float walkTimer = 0;
     public PlayerWalkState(PlayerMovement pm, StateMachine sm) : base(pm, sm)
     {
     }
@@ -34,6 +35,20 @@ public class PlayerWalkState : PlayerGroundedState
     public override void LogicUpdate()
     {
         base.LogicUpdate();
+        walkTimer -= Time.deltaTime;
+        if (walkTimer < 0) {
+            walkTimer = pm.walkSoundTimer;
+            int ran = Random.Range(0, 4);
+            if (ran == 0) {
+                GameController.instance.PlayAudio(SoundName.SfxFootstep1);
+            } else if (ran == 1) {
+                GameController.instance.PlayAudio(SoundName.SfxFootstep2);
+            } else if (ran == 2) {
+                GameController.instance.PlayAudio(SoundName.SfxFootstep3);
+            } else {
+                GameController.instance.PlayAudio(SoundName.SfxFootstep4);
+            }
+        }
     }
 
     public override void PhysicsUpdate()
